@@ -1,24 +1,8 @@
-# todo-ninja
+# todo-buink
 
-## Project setup
-```
-npm install
-```
+My todo app on Vue 3
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+Style: Composition API
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Used: Pinia, Vuetify(no style components at all),
+Vue Router, Firebase, Vee-validate
