@@ -2,7 +2,7 @@
   <div class="projects">
     <h1 class="text-center text-h5 text-secondary">Projects Page</h1>
 
-    <v-container class="my-5">
+    <v-container class="my-5" v-if="projectsStore.uid">
       <div class="text-subtitle-2 mt-4 mb-2">My projects</div>
 
       <v-expansion-panels multiple variant="accordion">

@@ -7,6 +7,7 @@
               form-name="Sign In From"
               btn-text="Sign In"
               :schema="SignInSchema"
+              @form-emit="SignIn"
           />
         </v-col>
         <v-col>
@@ -14,6 +15,7 @@
               form-name="Register From"
               btn-text="Register"
               :schema="RegisterSchema"
+              @form-emit="Register"
           />
         </v-col>
       </v-row>
@@ -23,7 +25,14 @@
 
 <script setup>
 import VForm from '../components/Form'
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
+import db from '@/fb'
 import * as Yup from 'yup';
+import {setDoc , doc} from "firebase/firestore";
+import {useProjectsStore} from '@/stores/projects'
+
+const projectsStore = useProjectsStore()
+const auth = getAuth();
 
 const SignInSchema = {
   fields: [
@@ -48,13 +57,13 @@ const RegisterSchema = {
       label: 'Your Nickname',
       name: 'nickname',
       type: 'text',
-      rules: Yup.string().min(6).required(),
+      rules: Yup.string().min(3).required(),
     },
     {
       label: 'Your Position',
       name: 'position',
       type: 'text',
-      rules: Yup.string().min(6).required(),
+      rules: Yup.string().min(3).required(),
     },
     {
       label: 'Your Email',
@@ -71,8 +80,34 @@ const RegisterSchema = {
   ],
 };
 
+const SignIn = async (values) => {
+  try {
+    console.log(values)
+    const res = await signInWithEmailAndPassword(auth, values.email, values.password)
+    const user = res.user
+    console.log(user)
+    projectsStore.setUid(user.uid)
+  }
+  catch (e) {
+    console.log(e)
+    throw e
+  }
+}
+
+const Register = async (values) => {
+  try {
+    const res = await createUserWithEmailAndPassword(auth, values.email, values.password)
+    const user = res.user
+    console.log(user)
+    await setDoc (doc(db, 'users', `${user.uid}`), {
+      nickname: values.nickname,
+      position: values.position
+    })
+  }
+  catch (e) {
+    console.log(e)
+    throw e
+  }
+}
+
 </script>
-
-<style scoped>
-
-</style>

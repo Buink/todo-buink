@@ -12,6 +12,7 @@
       >
         <label :for="field.name">{{ field.label }}</label>
         <Field
+            autocomplete="on"
             :name="field.name"
             :placeholder="field.name"
             :type="field.type"
@@ -36,7 +37,7 @@
 
 <script setup>
 import { Field, Form, ErrorMessage } from 'vee-validate';
-import {defineProps} from "vue";
+import {defineProps, defineEmits} from "vue";
 
 const props = defineProps({
   formName: {
@@ -53,8 +54,10 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['form-emit'])
+
 const submit = (values, { resetForm }) => {
-  console.log(values);
+  emit('form-emit', values);
   resetForm();
 }
 
