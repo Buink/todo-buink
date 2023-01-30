@@ -1,12 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import db from '@/fb'
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { /*collection, getDocs,*/ doc, getDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export const useProjectsStore = defineStore('projectsStore',  () => {
     //state
-    const projects = ref([])
     const uid = ref(null)
     const userName = ref(null)
     const position = ref(null)
@@ -23,6 +22,7 @@ export const useProjectsStore = defineStore('projectsStore',  () => {
                 setUserName(userInfo.data().nickname)
                 setPosition(userInfo.data().position)
             } else {
+                clearInfo()
                 console.log('not logged')
             }
         });
@@ -42,45 +42,27 @@ export const useProjectsStore = defineStore('projectsStore',  () => {
         position.value = newPosition
     }
 
-    const addProject = (project) => {
-        projects.value.push(project)
+    const clearInfo = () => {
+        uid.value = null
+        userName.value = null
+        position.value = null
     }
-
-    const setProjectsToStore = async () => {
-        if (projects.value.length === 0) {
-            const querySnapshot = await getDocs(collection(db, "projects"));
-            querySnapshot.forEach((doc) => {
-                console.log(doc.id, " => ", doc.data());
-                projects.value.push(doc.data())
-            });
-        }
-    }
-
-    const sortProjectsByProp = ((prop) => {
-        projects.value.sort((a, b) => a[prop] < b[prop] ? -1 : 1)
-    })
-
-    const getMyProjects = (() => {
-        return projects.value.filter(el => el['person'] === userName.value)
-    })
 
     return {
         //auth
         checkAuthAndSetState,
         //state
-        projects,
         uid,
         userName,
         position,
         //state change
         setUserName,
         setPosition,
-        setProjectsToStore,
-        addProject,
         setUid,
+        clearInfo
         //actions
-        sortProjectsByProp,
+
         //getters
-        getMyProjects,
+
     }
 })

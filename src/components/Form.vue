@@ -36,8 +36,8 @@
 </template>
 
 <script setup>
-import { Field, Form, ErrorMessage } from 'vee-validate';
 import {defineProps, defineEmits} from "vue";
+import { Field, Form, ErrorMessage } from 'vee-validate';
 
 const props = defineProps({
   formName: {

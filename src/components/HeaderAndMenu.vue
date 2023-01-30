@@ -19,30 +19,13 @@
         <span>Buink</span>
       </v-toolbar-title>
 
-<!--      <v-menu location="bottom">-->
-<!--        <template v-slot:activator="{ props }">-->
-<!--          <v-btn-->
-<!--              color="secondary"-->
-<!--              dark-->
-<!--              v-bind="props"-->
-<!--          >-->
-<!--            Menu-->
-<!--          </v-btn>-->
-<!--        </template>-->
-
-<!--        <v-list>-->
-<!--          <v-list-item-->
-<!--              v-for="(link, i) in links"-->
-<!--              :key="i"-->
-<!--          >-->
-<!--            <v-btn variant="text" color="secondary" router :to="link.route">{{link.text}}</v-btn>-->
-<!--          </v-list-item>-->
-<!--        </v-list>-->
-<!--      </v-menu>-->
-
-      <v-btn variant="text" color="secondary" router to="/sign">
+      <v-btn v-if="projectsStore.uid" variant="text" color="secondary" @click="SignOut">
+        <span>Sign Out</span>
+        <v-icon>mdi-logout</v-icon>
+      </v-btn>
+      <v-btn v-else variant="text" color="secondary" router to="/sign">
         <span>Sign In</span>
-        <v-icon>mdi-exit-to-app</v-icon>
+        <v-icon>mdi-login</v-icon>
       </v-btn>
     </v-toolbar>
 
@@ -50,11 +33,18 @@
       <v-row class="mt-5 text-center">
         <v-col width="100%">
           <v-avatar size="100">
-            <v-img src="https://cdn.pixabay.com/photo/2020/07/14/13/07/icon-5404125_1280.png" alt="my-avatar"></v-img>
+            <v-img v-if="projectsStore.uid"
+                   src="https://cdn.pixabay.com/photo/2020/07/14/13/07/icon-5404125_1280.png"
+                   alt="my-avatar">
+            </v-img>
+            <v-img v-else
+                   src="https://cdn-icons-png.flaticon.com/512/1705/1705706.png"
+                   alt="my-avatar">
+            </v-img>
           </v-avatar>
-          <p class="text-subheading mt-1">{{ projectsStore.userName }}</p>
+          <p class="text-subheading mt-1">{{ projectsStore.userName || 'Unknown user' }}</p>
         </v-col>
-        <v-col class="mt-4 mb-3">
+        <v-col v-if="projectsStore.uid" class="mt-4 mb-3">
           <PopUp @projectAdded="snackbar = true"/>
         </v-col>
       </v-row>
@@ -80,9 +70,11 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
 import PopUp from "@/components/PopUp";
+import {ref} from "vue";
+import { getAuth, signOut } from "firebase/auth";
 import {useProjectsStore} from '@/stores/projects'
+
 const projectsStore = useProjectsStore()
 
 let drawer = ref(false)
@@ -92,5 +84,16 @@ const links = ref([
       { text: 'My projects', icon: 'mdi-folder', route: '/projects' },
       { text: 'Team', icon: 'mdi-git', route: '/team' }
     ])
+
+const SignOut = async () => {
+  try {
+    const auth = getAuth()
+    await signOut(auth)
+    console.log('[SignOut]: Success')
+  } catch (e) {
+    console.log(e)
+    throw e
+  }
+}
 
 </script>

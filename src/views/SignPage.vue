@@ -1,6 +1,14 @@
 <template>
   <div class="sign-page">
-    <v-container>
+    <h1 class="text-center text-h5 text-secondary">Sign in</h1>
+
+    <v-container v-if="projectsStore.uid" class="text-center mt-5">
+      <v-btn variant="text" color="secondary" @click="SignOut">
+        <span>Click to quit</span>
+      </v-btn>
+    </v-container>
+
+    <v-container v-else>
       <v-row>
         <v-col>
           <VForm
@@ -25,9 +33,10 @@
 
 <script setup>
 import VForm from '../components/Form'
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
-import db from '@/fb'
+import router from "@/router";
 import * as Yup from 'yup';
+import db from '@/fb'
+import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {setDoc , doc} from "firebase/firestore";
 import {useProjectsStore} from '@/stores/projects'
 
@@ -82,11 +91,10 @@ const RegisterSchema = {
 
 const SignIn = async (values) => {
   try {
-    console.log(values)
     const res = await signInWithEmailAndPassword(auth, values.email, values.password)
     const user = res.user
-    console.log(user)
     projectsStore.setUid(user.uid)
+    await router.push('/')
   }
   catch (e) {
     console.log(e)
@@ -98,13 +106,24 @@ const Register = async (values) => {
   try {
     const res = await createUserWithEmailAndPassword(auth, values.email, values.password)
     const user = res.user
-    console.log(user)
-    await setDoc (doc(db, 'users', `${user.uid}`), {
+    await setDoc(doc(db, 'users', `${user.uid}`), {
       nickname: values.nickname,
       position: values.position
     })
+    await SignIn(values)
   }
   catch (e) {
+    console.log(e)
+    throw e
+  }
+}
+
+const SignOut = async () => {
+  try {
+    const auth = getAuth()
+    await signOut(auth)
+    console.log('[SignOut]: Success')
+  } catch (e) {
     console.log(e)
     throw e
   }
