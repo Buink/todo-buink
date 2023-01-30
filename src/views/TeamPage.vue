@@ -2,7 +2,13 @@
   <div class="team">
     <h1 class="text-center text-h5 text-secondary">Team Page</h1>
 
-    <v-container class="my-5">
+    <v-container v-if="!projectsStore.uid" class="text-center mt-5">
+      <v-btn variant="text" color="secondary" router to="/sign">
+        <span>Sign in first</span>
+      </v-btn>
+    </v-container>
+    
+    <v-container v-else class="my-5">
       <v-row>
         <v-col cols="12" sm="6" md="4" lg="3" v-for="(person, i) in team" :key="i">
           <v-card class="text-center ma-3 bg-background-lighten-1">
@@ -30,6 +36,10 @@
 </template>
 
 <script setup>
+import {useProjectsStore} from '@/stores/projects'
+
+const projectsStore = useProjectsStore()
+
 const team = [
   {name: 'Valeriy Robko', role: 'Designer', avatar: 'https://cdn-icons-png.flaticon.com/512/3048/3048122.png'},
   {name: 'Sasha Melov', role: 'Web developer', avatar: 'https://cdn-icons-png.flaticon.com/512/4128/4128176.png'},

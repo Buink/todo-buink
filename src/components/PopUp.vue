@@ -45,10 +45,10 @@
 </template>
 
 <script setup>
-import moment  from 'moment'
 import {ref, computed, defineEmits} from "vue";
-import {addDoc, collection} from "firebase/firestore";
+import moment  from 'moment'
 import db from "@/fb";
+import {addDoc, collection} from "firebase/firestore";
 import {useProjectsStore} from '@/stores/projects'
 
 const projectsStore = useProjectsStore()

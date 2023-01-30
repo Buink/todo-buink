@@ -8,13 +8,6 @@
   </v-app>
 </template>
 
-<script>
+<script setup>
 import CustomHeader from "@/components/HeaderAndMenu";
-
-export default {
-  name: 'App',
-  components: {
-    CustomHeader,
-  }
-}
 </script>
