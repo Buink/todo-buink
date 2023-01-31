@@ -1,6 +1,6 @@
 <template>
   <div class="team">
-    <h1 class="text-center text-h5 text-secondary">Team Page</h1>
+    <h1 class="text-center text-h5 text-secondary">Team</h1>
 
     <v-container v-if="!projectsStore.uid" class="text-center mt-5">
       <v-btn variant="text" color="secondary" router to="/sign">
@@ -18,8 +18,8 @@
               </v-avatar>
             </v-responsive>
             <v-card-text>
-              <div class="text-subheading">{{person.name}}</div>
-              <div class="text-grey">{{person.role}}</div>
+              <div class="text-subheading">{{person.nickname}}</div>
+              <div class="text-grey">{{person.position}}</div>
             </v-card-text>
             <v-card-actions class="justify-center">
               <v-btn color="secondary">
@@ -37,14 +37,24 @@
 
 <script setup>
 import {useProjectsStore} from '@/stores/projects'
+import {onMounted, ref} from "vue";
+import {collection, getDocs} from "firebase/firestore";
+import db from "@/fb";
 
 const projectsStore = useProjectsStore()
+const team = ref([])
+onMounted( async() => {
+  const teamRes = await getDocs(collection(db, "users"));
+  teamRes.forEach((doc) => {
+    team.value.push(doc.data())
+  })
+})
 
-const team = [
-  {name: 'Valeriy Robko', role: 'Designer', avatar: 'https://cdn-icons-png.flaticon.com/512/3048/3048122.png'},
-  {name: 'Sasha Melov', role: 'Web developer', avatar: 'https://cdn-icons-png.flaticon.com/512/4128/4128176.png'},
-  {name: 'Igor Maltsev', role: 'Sales manager', avatar: 'https://cdn-icons-png.flaticon.com/512/194/194828.png'},
-  {name: 'Vika Gavr', role: 'Secretary', avatar: 'https://cdn-icons-png.flaticon.com/512/145/145847.png'},
-  {name: 'Anna Levon', role: 'Social media manager', avatar: 'https://www.shareicon.net/data/256x256/2016/09/15/829453_user_512x512.png'}
-  ]
+// const team = [
+//   {name: 'Valeriy Robko', role: 'Designer', avatar: 'https://cdn-icons-png.flaticon.com/512/3048/3048122.png'},
+//   {name: 'Sasha Melov', role: 'Web developer', avatar: 'https://cdn-icons-png.flaticon.com/512/4128/4128176.png'},
+//   {name: 'Igor Maltsev', role: 'Sales manager', avatar: 'https://cdn-icons-png.flaticon.com/512/194/194828.png'},
+//   {name: 'Vika Gavr', role: 'Secretary', avatar: 'https://cdn-icons-png.flaticon.com/512/145/145847.png'},
+//   {name: 'Anna Levon', role: 'Social media manager', avatar: 'https://www.shareicon.net/data/256x256/2016/09/15/829453_user_512x512.png'}
+//   ]
 </script>

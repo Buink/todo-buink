@@ -1,6 +1,6 @@
 <template>
   <div class="projects">
-    <h1 class="text-center text-h5 text-secondary">Projects Page</h1>
+    <h1 class="text-center text-h5 text-secondary">My projects</h1>
 
     <v-container v-if="!projectsStore.uid" class="text-center mt-5">
       <v-btn variant="text" color="secondary" router to="/sign">
@@ -54,6 +54,6 @@ onMounted(async() => {
 })
 
 const myProjects = computed(() => {
-  return projects.value.filter(el => el['person'] === projectsStore.userName)
+  return projects.value.filter(el => el['person'] === projectsStore.nickname)
 })
 </script>

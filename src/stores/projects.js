@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import db from '@/fb'
-import { /*collection, getDocs,*/ doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export const useProjectsStore = defineStore('projectsStore',  () => {
     //state
     const uid = ref(null)
-    const userName = ref(null)
+    const nickname = ref(null)
     const position = ref(null)
 
     //auth
@@ -35,7 +35,7 @@ export const useProjectsStore = defineStore('projectsStore',  () => {
     }
 
     const setUserName = (newUserName) => {
-        userName.value = newUserName
+        nickname.value = newUserName
     }
 
     const setPosition = (newPosition) => {
@@ -44,7 +44,7 @@ export const useProjectsStore = defineStore('projectsStore',  () => {
 
     const clearInfo = () => {
         uid.value = null
-        userName.value = null
+        nickname.value = null
         position.value = null
     }
 
@@ -53,7 +53,7 @@ export const useProjectsStore = defineStore('projectsStore',  () => {
         checkAuthAndSetState,
         //state
         uid,
-        userName,
+        nickname,
         position,
         //state change
         setUserName,

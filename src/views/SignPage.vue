@@ -94,7 +94,7 @@ const SignIn = async (values) => {
     const res = await signInWithEmailAndPassword(auth, values.email, values.password)
     const user = res.user
     projectsStore.setUid(user.uid)
-    await router.push('/')
+    await router.go(-1)
   }
   catch (e) {
     console.log(e)
@@ -108,7 +108,8 @@ const Register = async (values) => {
     const user = res.user
     await setDoc(doc(db, 'users', `${user.uid}`), {
       nickname: values.nickname,
-      position: values.position
+      position: values.position,
+      avatar: 'https://cdn.pixabay.com/photo/2020/07/14/13/07/icon-5404125_1280.png'
     })
     await SignIn(values)
   }

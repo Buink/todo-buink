@@ -1,10 +1,12 @@
 <template>
     <v-dialog max-width="600px" v-model="dialog">
+
       <template v-slot:activator="{ props }">
         <v-btn color="secondary" dark v-bind="props">
           Add new project
         </v-btn>
       </template>
+
       <v-card>
         <v-card-title class="text-center">
           <h2>Add a New Project</h2>
@@ -24,7 +26,6 @@
                 prepend-icon="mdi-information-variant"
                 :rules="rules"
             ></v-textarea>
-
             <v-input prepend-icon="mdi-timetable" v-model="due" :rules="rules">
               <input type="date" v-model="due">
             </v-input>
@@ -46,8 +47,8 @@
 
 <script setup>
 import {ref, computed, defineEmits} from "vue";
-import moment  from 'moment'
 import db from "@/fb";
+import moment  from 'moment'
 import {addDoc, collection} from "firebase/firestore";
 import {useProjectsStore} from '@/stores/projects'
 
@@ -69,7 +70,6 @@ const formattedDate = computed(() => {
 
 const rules = computed(() => {
   const rules = []
-
   if (min.value) {
     const rule =
         v => (v || '').length >= min.value ||
@@ -77,7 +77,6 @@ const rules = computed(() => {
 
     rules.push(rule)
   }
-
   return rules
 })
 
@@ -85,8 +84,6 @@ const submit = async () => {
   const {valid} = await myForm.value.validate()
 
   if (valid) {
-    console.log(title.value, content.value, formattedDate.value)
-
     try {
       loading.value = true
 
@@ -94,21 +91,10 @@ const submit = async () => {
         title: title.value,
         content: content.value,
         due: formattedDate.value,
-        person: 'Buink',
+        person: projectsStore.nickname,
         status: 'ongoing'
       });
       console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    } finally {
-      const project = {
-        title: title.value,
-        content: content.value,
-        due: formattedDate.value,
-        person: 'Buink',
-        status: 'ongoing'
-      }
-      projectsStore.addProject(project)
 
       loading.value = false
       dialog.value = false
@@ -116,6 +102,8 @@ const submit = async () => {
       title.value = ''
       content.value = ''
       due.value = null
+    } catch (e) {
+      console.error("Error adding document: ", e);
     }
   }
 }

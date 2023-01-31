@@ -42,7 +42,7 @@
                    alt="my-avatar">
             </v-img>
           </v-avatar>
-          <p class="text-subheading mt-1">{{ projectsStore.userName || 'Unknown user' }}</p>
+          <p class="text-subheading mt-1">{{ projectsStore.nickname || 'Unknown user' }}</p>
         </v-col>
         <v-col v-if="projectsStore.uid" class="mt-4 mb-3">
           <PopUp @projectAdded="snackbar = true"/>
