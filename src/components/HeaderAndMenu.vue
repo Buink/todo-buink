@@ -45,7 +45,7 @@
           <p class="text-subheading mt-1">{{ projectsStore.nickname || 'Unknown user' }}</p>
         </v-col>
         <v-col v-if="projectsStore.uid" class="mt-4 mb-3">
-          <PopUp @projectAdded="snackbar = true"/>
+          <PopUp @projectAdded="projectAdded()"/>
         </v-col>
       </v-row>
       <v-list>
@@ -71,11 +71,18 @@
 
 <script setup>
 import PopUp from "@/components/PopUp";
-import {ref} from "vue";
+import {defineEmits, ref} from "vue";
 import { getAuth, signOut } from "firebase/auth";
 import {useProjectsStore} from '@/stores/projects'
 
 const projectsStore = useProjectsStore()
+
+const emit = defineEmits(['reloadRouter'])
+
+const projectAdded = () => {
+  snackbar.value = true
+  emit('reloadRouter')
+}
 
 let drawer = ref(false)
 let snackbar = ref(false)

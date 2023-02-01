@@ -48,7 +48,7 @@
 <script setup>
 import {ref, computed, defineEmits} from "vue";
 import db from "@/fb";
-import moment  from 'moment'
+// import moment  from 'moment'
 import {addDoc, collection} from "firebase/firestore";
 import {useProjectsStore} from '@/stores/projects'
 
@@ -64,9 +64,9 @@ const myForm = ref(null)
 
 const emit = defineEmits(['projectAdded'])
 
-const formattedDate = computed(() => {
-  return due.value ? moment(due.value).format("Do MMMM YYYY") : ""
-})
+// const formattedDate = computed(() => {
+//   return due.value ? moment(due.value).format("Do MMM YYYY") : ""
+// })
 
 const rules = computed(() => {
   const rules = []
@@ -90,7 +90,7 @@ const submit = async () => {
       const docRef = await addDoc(collection(db, "projects"), {
         title: title.value,
         content: content.value,
-        due: formattedDate.value,
+        due: Date.parse(due.value),
         person: projectsStore.nickname,
         status: 'ongoing'
       });

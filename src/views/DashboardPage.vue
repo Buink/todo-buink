@@ -8,9 +8,13 @@
       </v-btn>
     </v-container>
 
+    <v-container v-else-if="loading">
+      <Loader />
+    </v-container>
+
     <v-container v-else>
       <v-container v-if="!projects.length" class="mt-10">
-        <Loader />
+        <p class="text-center">There is no projects.</p>
       </v-container>
 
       <v-container v-else class="my-5">
@@ -26,6 +30,11 @@
             <span class="text-caption text-lowercase ml-2">By person</span>
             <v-tooltip activator="parent" location="top">Sort projects by its person</v-tooltip>
           </v-btn>
+          <v-btn variant="text" class="ml-2" size="small" color="grey" @click="sortProjectsByProp('due')">
+            <v-icon size="small">mdi-clock-alert</v-icon>
+            <span class="text-caption text-lowercase ml-2">By due time</span>
+            <v-tooltip activator="parent" location="top">Sort projects by its due time</v-tooltip>
+          </v-btn>
         </v-row>
 
         <v-card variant="flat" class="pa-3 mb-3" v-for="(project, i) in projects" :key = 'i'>
@@ -40,7 +49,7 @@
             </v-col>
             <v-col cols="6" sm="4" md="2">
               <div class="text-caption text-grey">Due by</div>
-              <div>{{project.due}}</div>
+              <div>{{ $filters.dateFilter(project.due) }}</div>
             </v-col>
             <v-col cols="6" sm="4" md="2" class="text-center">
               <div>
@@ -52,8 +61,6 @@
 
       </v-container>
     </v-container>
-
-
 
   </div>
 </template>
@@ -68,12 +75,16 @@ import {useProjectsStore} from '@/stores/projects'
 const projectsStore = useProjectsStore()
 
 const projects = ref([])
+let loading = ref(true)
 
 onMounted(async() => {
   const projectsRes = await getDocs(collection(db, "projects"));
   projectsRes.forEach((doc) => {
     projects.value.push(doc.data())
   })
+  sortProjectsByProp('due')
+
+  loading.value = false
 })
 
 const sortProjectsByProp = ((prop) => {

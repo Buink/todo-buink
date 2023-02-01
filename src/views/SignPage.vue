@@ -33,15 +33,13 @@
 
 <script setup>
 import VForm from '../components/Form'
-import router from "@/router";
 import * as Yup from 'yup';
-import db from '@/fb'
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
-import {setDoc , doc} from "firebase/firestore";
+import signInFunction from "@/functions/authFunctions/signIn/signInFunction";
+import registerFunction from "@/functions/authFunctions/register/registerFunction";
+import signOutFunction from "@/functions/authFunctions/signOut/signOutFunction";
 import {useProjectsStore} from '@/stores/projects'
 
 const projectsStore = useProjectsStore()
-const auth = getAuth();
 
 const SignInSchema = {
   fields: [
@@ -90,44 +88,15 @@ const RegisterSchema = {
 };
 
 const SignIn = async (values) => {
-  try {
-    const res = await signInWithEmailAndPassword(auth, values.email, values.password)
-    const user = res.user
-    projectsStore.setUid(user.uid)
-    await router.go(-1)
-  }
-  catch (e) {
-    console.log(e)
-    throw e
-  }
+  await signInFunction(values)
 }
 
 const Register = async (values) => {
-  try {
-    const res = await createUserWithEmailAndPassword(auth, values.email, values.password)
-    const user = res.user
-    await setDoc(doc(db, 'users', `${user.uid}`), {
-      nickname: values.nickname,
-      position: values.position,
-      avatar: 'https://cdn.pixabay.com/photo/2020/07/14/13/07/icon-5404125_1280.png'
-    })
-    await SignIn(values)
-  }
-  catch (e) {
-    console.log(e)
-    throw e
-  }
+  await registerFunction(values)
 }
 
 const SignOut = async () => {
-  try {
-    const auth = getAuth()
-    await signOut(auth)
-    console.log('[SignOut]: Success')
-  } catch (e) {
-    console.log(e)
-    throw e
-  }
+  await signOutFunction()
 }
 
 </script>
